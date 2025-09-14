@@ -5,7 +5,7 @@
       <!-- Empty fallback to prevent hydration mismatch -->
     </template>
     <div
-      v-if="!isDemoBannerDismissed && isMounted"
+      v-if="!isDemoBannerDismissed"
       class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white"
     >
       <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
@@ -479,19 +479,8 @@ const searchLocation = ref('')
 const searchType = ref('')
 const searchDate = ref('')
 
-// Demo banner state
-const isDemoBannerDismissed = ref(false)
-const isMounted = ref(false)
-
-// Check dismissal state only on client side
-if (process.client) {
-  isDemoBannerDismissed.value = localStorage.getItem('demo-banner-dismissed') === 'true'
-}
-
-// Set mounted state after component is mounted
-onMounted(() => {
-  isMounted.value = true
-})
+// Demo banner state - initialize with localStorage check
+const isDemoBannerDismissed = ref(process.client ? localStorage.getItem('demo-banner-dismissed') === 'true' : false)
 
 const dismissDemoBanner = () => {
   isDemoBannerDismissed.value = true
