@@ -1,0 +1,9 @@
+name = "daydeskr-frontend"
+compatibility_date = "2024-09-13"
+pages_build_output_dir = "dist"
+
+[env.production]
+name = "daydeskr-frontend-production"
+
+[env.preview]
+name = "daydeskr-frontend-preview"
