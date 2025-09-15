@@ -1,0 +1,2 @@
+import{e as r,n as e}from"./server.mjs";import{u as o}from"./auth-Dc6Sz62s.mjs";import"../nitro/nitro.mjs";import"../routes/renderer.mjs";import"../_/shared.esm-bundler.mjs";import"./cookie-D3WPRoGl.mjs";const s=r((r,s)=>{const t=o();return t.isAuthenticated?t.isProvider?void 0:t.isSeeker?e("/dashboard/seeker"):e("/auth/login"):e("/auth/login")});export{s as default};
+//# sourceMappingURL=provider-BhsW8n79.mjs.map

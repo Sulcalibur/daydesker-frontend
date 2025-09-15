@@ -1,0 +1,2 @@
+import{_ as e,v as s}from"./server.mjs";import{B as t}from"../routes/renderer.mjs";import"../nitro/nitro.mjs";import"../_/shared.esm-bundler.mjs";const r={};const o=r.setup;r.setup=(e,t)=>{const r=s.useSSRContext();return(r.modules||(r.modules=new Set)).add("pages/test.vue"),o?o(e,t):void 0};const n=e(r,[["ssrRender",function(e,s,r,o){s(`<div${t(o)}><h1>Test Page Works!</h1></div>`)}]]);export{n as default};
+//# sourceMappingURL=test-Bm1bbEtt.mjs.map
