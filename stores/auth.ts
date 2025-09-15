@@ -41,9 +41,12 @@ export const useAuthStore = defineStore('auth', () => {
   
   // Initialize auth state from cookie on store creation
   const initializeAuth = () => {
-    const tokenCookie = useCookie('auth-token')
-    if (tokenCookie.value) {
-      token.value = tokenCookie.value
+    // Use process.client to ensure this only runs on client side
+    if (process.client) {
+      const tokenCookie = useCookie('auth-token')
+      if (tokenCookie.value) {
+        token.value = tokenCookie.value
+      }
     }
   }
   

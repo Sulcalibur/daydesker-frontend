@@ -267,7 +267,8 @@ async function handleLogout() {
 
 // Click outside handler for user menu
 function handleClickOutside(event: Event) {
-  if (userMenuRef.value && !userMenuRef.value.contains(event.target as Node)) {
+  // Add null checks to prevent nextSibling errors
+  if (userMenuRef.value && event.target && userMenuRef.value.contains && !userMenuRef.value.contains(event.target as Node)) {
     closeUserMenu()
   }
 }

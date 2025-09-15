@@ -1,8 +1,9 @@
 <template>
-  <!-- Demo Banner - Completely client side only with no SSR placeholder -->
+  <!-- Demo Banner - Completely client side only with proper fallback -->
   <ClientOnly>
     <template #fallback>
-      <!-- Empty fallback to prevent hydration mismatch -->
+      <!-- Placeholder with same height to prevent layout shift -->
+      <div class="h-16 bg-transparent"></div>
     </template>
     <div
       v-if="!isDemoBannerDismissed"
@@ -479,8 +480,16 @@ const searchLocation = ref('')
 const searchType = ref('')
 const searchDate = ref('')
 
-// Demo banner state - initialize with localStorage check
-const isDemoBannerDismissed = ref(process.client ? localStorage.getItem('demo-banner-dismissed') === 'true' : false)
+// Demo banner state - prevent hydration mismatch by using useState
+const isDemoBannerDismissed = useState('demo-banner-dismissed', () => false)
+
+// Initialize from localStorage on client side only
+onMounted(() => {
+  if (process.client) {
+    const dismissed = localStorage.getItem('demo-banner-dismissed') === 'true'
+    isDemoBannerDismissed.value = dismissed
+  }
+})
 
 const dismissDemoBanner = () => {
   isDemoBannerDismissed.value = true
