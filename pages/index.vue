@@ -16,12 +16,12 @@
             <span class="hidden md:inline">
               🚀 This is a demo version of DayDeskr - Full platform launching soon!
             </span>
-            <a
-              href="mailto:hello@daydeskr.com"
-              class="ml-2 text-blue-100 hover:text-white underline font-semibold"
+            <button
+              @click="handleEmailContact"
+              class="ml-2 text-blue-100 hover:text-white underline font-semibold bg-transparent border-none cursor-pointer"
             >
               Get notified →
-            </a>
+            </button>
           </p>
         </div>
         <div class="absolute inset-y-0 right-0 pt-1 pr-1 flex items-start sm:pt-1 sm:pr-2 sm:items-start">
@@ -943,5 +943,10 @@ const handleSearch = () => {
     path: '/search',
     query
   })
+}
+
+const handleEmailContact = () => {
+  // Open email client with pre-filled email
+  window.location.href = 'mailto:hello@daydeskr.com?subject=DayDeskr%20Launch%20Notification&body=Hi%20DayDeskr%20team,%0A%0APlease%20notify%20me%20when%20the%20full%20platform%20launches.%0A%0AThanks!'
 }
 </script>

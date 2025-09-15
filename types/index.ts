@@ -3,9 +3,59 @@ export interface User {
   name: string
   email: string
   user_type: 'desk_seeker' | 'workspace_provider'
+  avatar_url?: string
   bio?: string
+  is_verified: boolean
   created_at: string
   updated_at: string
+}
+
+// Authentication interfaces
+export interface LoginCredentials {
+  email: string
+  password: string
+  remember?: boolean
+}
+
+export interface RegisterData {
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
+  user_type: 'desk_seeker' | 'workspace_provider'
+  bio?: string
+  // Provider-specific fields
+  business_name?: string
+  description?: string
+  website?: string
+  phone?: string
+}
+
+export interface AuthResponse {
+  user: User
+  token: string
+  expires_at?: string
+  message?: string
+}
+
+export interface UserTypeOption {
+  type: 'desk_seeker' | 'workspace_provider'
+  title: string
+  description: string
+  icon: string
+  features: string[]
+}
+
+export interface LoginFormData {
+  email: string
+  password: string
+  remember: boolean
+}
+
+export interface ApiError {
+  message: string
+  errors?: Record<string, string[]>
+  status: number
 }
 
 export interface WorkspaceProvider {
@@ -81,6 +131,14 @@ export interface ApiResponse<T> {
   message?: string
   errors?: Record<string, string[]>
 }
+
+// User type constants
+export const USER_TYPES = {
+  DESK_SEEKER: 'desk_seeker',
+  WORKSPACE_PROVIDER: 'workspace_provider'
+} as const
+
+export type UserType = typeof USER_TYPES[keyof typeof USER_TYPES]
 
 // Workspace type display names
 export const WORKSPACE_TYPES = {
