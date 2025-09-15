@@ -27,13 +27,13 @@ This guide covers deploying the DayDeskr application with:
    - Choose the branch (main/master)
 
 3. **Configure Build Settings**:
-   - **Build command**: `npm run build`
-   - **Build output directory**: `.output/public`
+   - **Build command**: `npm run generate`
+   - **Build output directory**: `dist`
    - **Root directory**: (leave empty or set to frontend folder if needed)
 
 4. **Set Environment Variables**:
    ```
-   NUXT_PUBLIC_API_BASE_URL=https://your-laravel-api-url.com/api
+   NUXT_PUBLIC_API_BASE_URL=https://daydeskr-api-production.up.railway.app
    ```
 
 5. **Deploy**: Cloudflare will automatically deploy on every push!
@@ -120,11 +120,26 @@ After deployment, you'll have:
 
 ## 🐛 Troubleshooting
 
+### Current Issue (September 2025)
+**Local vs Production Sync**: If localhost:3000 shows different content than daydeskr.com:
+1. **Clear Browser Cache**: Hard refresh (Ctrl+F5 / Cmd+Shift+R)
+2. **Check Cloudflare Cache**: May take 5-10 minutes to propagate
+3. **Verify Build Settings**: Ensure build command is `npm run generate`
+4. **Force Deployment**: Push empty commit to trigger rebuild
+   ```bash
+   git commit --allow-empty -m "force deployment"
+   git push origin main
+   ```
+5. **Check Environment Variables**: Verify in Cloudflare Pages dashboard
+6. **Review Build Logs**: Check for any build failures or warnings
+
 ### Common Issues:
 
 1. **Build Fails**: Check Node.js version (use Node 18+)
 2. **API Not Connecting**: Verify CORS settings in Laravel
 3. **Images Not Loading**: Check Unsplash URLs are accessible
+4. **Site Not Updating**: Check if build command uses `npm run generate` (not `build`)
+5. **Caching Issues**: Cloudflare may cache aggressively - wait 10-15 minutes
 
 ### Laravel CORS Configuration:
 
