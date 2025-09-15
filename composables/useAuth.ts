@@ -5,9 +5,8 @@ export const useAuth = () => {
   const authStore = useAuthStore()
   const { login: apiLogin, register: apiRegister, logout: apiLogout, getUser: apiGetUser, updateProfile: apiUpdateProfile } = useApi()
   
-  // Initialize auth state on composable creation
+  // Initialize auth state on composable creation (client-side only)
   onMounted(() => {
-    authStore.initializeAuth()
     // If we have a token but no user, fetch user data
     if (authStore.token && !authStore.user) {
       fetchUser()

@@ -41,14 +41,14 @@ export const useAuthStore = defineStore('auth', () => {
   
   // Initialize auth state from cookie on store creation
   const initializeAuth = () => {
-    // Use process.client to ensure this only runs on client side
-    if (process.client) {
-      const tokenCookie = useCookie('auth-token')
-      if (tokenCookie.value) {
-        token.value = tokenCookie.value
-      }
+    const tokenCookie = useCookie('auth-token')
+    if (tokenCookie.value) {
+      token.value = tokenCookie.value
     }
   }
+  
+  // Initialize auth state immediately when store is created
+  initializeAuth()
   
   // Get dashboard route based on user type
   const getDashboardRoute = () => {
