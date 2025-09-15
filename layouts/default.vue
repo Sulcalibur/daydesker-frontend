@@ -24,7 +24,7 @@
                   Sign In
                 </NuxtLink>
                 <NuxtLink 
-                  to="/auth/register" 
+                  to="/auth/select-type" 
                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
                 >
                   Register
@@ -89,7 +89,7 @@
               Sign In
             </NuxtLink>
             <NuxtLink 
-              to="/auth/register" 
+              to="/auth/select-type" 
               class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200"
             >
               Register

@@ -1,2 +1,0 @@
-import{u as n,v as e}from"./server.mjs";import{O as t,P as r}from"../routes/renderer.mjs";function useHead(s,o={}){const u=function(t){const s=t||n();return s.ssrContext?.head||s.runWithContext(()=>{if(e.hasInjectionContext()){const n=e.inject(r);if(!n)throw new Error("[nuxt] [unhead] Missing Unhead instance.");return n}})}(o.nuxt);return t(s,{head:u,...o})}export{useHead as u};
-//# sourceMappingURL=composables-BaIXnRa0.mjs.map
