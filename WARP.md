@@ -13,6 +13,8 @@ DayDeskr Frontend is a Nuxt 4 application for booking flexible workspaces, meeti
 - Tailwind CSS with custom design system
 - Headless UI & Heroicons
 - VueUse composables
+- Pinia for state management
+- JWT authentication
 
 ## Development Commands
 
@@ -47,14 +49,21 @@ npm run postinstall  # Prepare Nuxt (runs automatically after install)
 - `pages/` - File-based routing with Nuxt
   - `index.vue` - Homepage with workspace search
   - `workspaces/[id].vue` - Dynamic workspace detail pages
+  - `auth/` - Authentication pages (login, register, select-type)
+  - `dashboard/` - User dashboards (provider and seeker)
 - `components/` - Reusable Vue components
   - `WorkspaceCard.vue` - Main workspace card component with image carousel
+  - `auth/` - Authentication forms and user type selector
 - `composables/` - Vue 3 composables for shared logic
   - `useApi.ts` - API client with error handling and typed responses
+  - `useAuth.ts` - Authentication composable with login/register/logout
+- `stores/` - Pinia state management
+  - `auth.ts` - Authentication store with user state and JWT handling
+- `middleware/` - Nuxt middleware for route protection
+  - `auth.ts`, `guest.ts`, `provider.ts`, `seeker.ts` - Role-based access control
 - `types/` - TypeScript type definitions for API responses and data models
 - `utils/` - Pure utility functions for formatting, validation, etc.
 - `layouts/` - Page layouts with navigation and footer
-- `app/` - Main app configuration (currently shows Nuxt welcome)
 
 ### API Integration
 - **Base URL**: Configured via `NUXT_PUBLIC_API_BASE_URL` (defaults to Railway production API)
@@ -78,6 +87,13 @@ Strong TypeScript integration with comprehensive interfaces:
 - **Typography**: Inter font loaded via Google Fonts
 
 ## Key Features
+
+### Authentication System
+- **JWT-based Authentication**: Secure token-based authentication with HTTP-only cookies
+- **Role-based Access**: Two user types - workspace providers and desk seekers
+- **Protected Routes**: Middleware-based route protection for authenticated areas
+- **User Dashboards**: Separate dashboards for providers and seekers
+- **Registration Flow**: Multi-step registration with user type selection
 
 ### Workspace Discovery
 - **Search**: Text-based search across workspace names and descriptions
@@ -117,9 +133,10 @@ NUXT_PUBLIC_API_BASE_URL=https://daydeskr-api-production.up.railway.app
 3. Handle errors consistently with `createError()` for proper status codes
 
 ### State Management
-- Local component state with `ref()` and `reactive()`
-- Computed properties for derived data (e.g., `parsedAmenities`)
-- No global state management (Pinia) currently needed
+- **Global State**: Pinia stores for authentication and user management
+- **Local Component State**: `ref()` and `reactive()` for component-specific data
+- **Authentication Store**: Centralized auth state with JWT token management
+- **Computed Properties**: Derived data like user roles and authentication status
 
 ### Navigation
 - File-based routing with Nuxt Router
@@ -162,4 +179,4 @@ Configured for **Cloudflare Pages** deployment:
 - Environment variables via Cloudflare dashboard
 - Automatic deployments from git commits
 
-The application is production-ready but missing booking functionality (intentionally disabled with "Coming Soon" state).
+The application is production-ready with full authentication system. Booking functionality is intentionally disabled with "Coming Soon" state.
