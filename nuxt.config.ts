@@ -10,6 +10,11 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
   
+  // Global CSS
+  css: [
+    '~/assets/css/main.css'
+  ],
+  
   // Configure for Cloudflare Pages
   nitro: {
     preset: 'cloudflare-pages',

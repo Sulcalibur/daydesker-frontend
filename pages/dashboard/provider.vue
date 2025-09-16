@@ -17,10 +17,10 @@
             >
               <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                 <span class="text-white text-sm font-medium">
-                  {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
+                  {{ user?.name?.split(' ').map(n => n.charAt(0)).join('') || 'U' }}
                 </span>
               </div>
-              <span class="hidden sm:block">{{ user?.first_name }} {{ user?.last_name }}</span>
+              <span class="hidden sm:block">{{ user?.name || 'User' }}</span>
             </button>
             <button
               @click="handleLogout"
@@ -38,7 +38,7 @@
       <!-- Welcome Section -->
       <div class="mb-8">
         <h2 class="text-3xl font-bold text-gray-900 mb-2">
-          Welcome back, {{ user?.first_name }}!
+          Welcome back, {{ user?.name?.split(' ')[0] || user?.name }}!
         </h2>
         <p class="text-gray-600">
           Manage your workspaces and bookings from your dashboard.
@@ -316,10 +316,10 @@
           <div class="text-center">
             <div class="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <span class="text-white text-xl font-medium">
-                {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
+                {{ user?.name?.split(' ').map(n => n.charAt(0)).join('') || 'U' }}
               </span>
             </div>
-            <h4 class="text-lg font-medium text-gray-900">{{ user?.first_name }} {{ user?.last_name }}</h4>
+            <h4 class="text-lg font-medium text-gray-900">{{ user?.name || 'User' }}</h4>
             <p class="text-gray-600">{{ user?.email }}</p>
             <p class="text-sm text-gray-500">{{ user?.company_name }}</p>
           </div>

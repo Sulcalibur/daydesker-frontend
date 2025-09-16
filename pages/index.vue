@@ -67,18 +67,91 @@
           <!-- Search Bar -->
           <div class="max-w-4xl mx-auto mb-16">
             <div class="bg-white rounded-2xl lg:rounded-full shadow-2xl border border-gray-100 p-3 lg:p-2">
-              <div class="grid grid-cols-1 lg:grid-cols-4 gap-3 lg:gap-2">
+              <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_auto] gap-3 lg:gap-4">
                 <!-- Location Search -->
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                <div class="relative location-dropdown-container">
+                  <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
                     <Icon name="heroicons:map-pin-20-solid" class="h-5 w-5 text-gray-400" />
                   </div>
-                  <input
-                    v-model="searchLocation"
-                    type="text"
-                    placeholder="Where?"
-                    class="w-full pl-12 pr-4 py-4 bg-transparent border-0 focus:ring-0 text-gray-900 placeholder-gray-500 rounded-xl lg:rounded-full font-medium"
-                  />
+                  
+                  <!-- Location Input/Button -->
+                  <div class="relative">
+                    <input
+                      v-model="searchLocation"
+                      type="text"
+                      placeholder="Where?"
+                      class="w-full pl-12 pr-10 py-4 bg-transparent border-0 focus:ring-0 text-gray-900 placeholder-gray-500 rounded-xl lg:rounded-full font-medium cursor-pointer"
+                      @click="toggleLocationDropdown"
+                      @focus="showLocationDropdown = true"
+                      readonly
+                    />
+                    <button
+                      type="button"
+                      class="absolute inset-y-0 right-4 flex items-center pointer-events-auto"
+                      @click="toggleLocationDropdown"
+                    >
+                      <Icon 
+                        :name="showLocationDropdown ? 'heroicons:chevron-up-20-solid' : 'heroicons:chevron-down-20-solid'" 
+                        class="h-5 w-5 text-gray-400 transition-transform duration-200" 
+                      />
+                    </button>
+                  </div>
+
+                  <!-- Dropdown Menu -->
+                  <div
+                    v-if="showLocationDropdown"
+                    class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto"
+                  >
+                    <!-- Current Location Option -->
+                    <button
+                      type="button"
+                      class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center space-x-3 border-b border-gray-100"
+                      @click="selectLocationOption(locationOptions[0])"
+                      :disabled="isDetectingLocation"
+                    >
+                      <Icon 
+                        :name="isDetectingLocation ? 'heroicons:arrow-path-20-solid' : 'heroicons:map-pin-20-solid'" 
+                        :class="[
+                          'h-5 w-5',
+                          isDetectingLocation ? 'text-blue-500 animate-spin' : 'text-blue-600'
+                        ]" 
+                      />
+                      <span :class="isDetectingLocation ? 'text-blue-600' : 'text-gray-900'">
+                        {{ isDetectingLocation ? 'Detecting location...' : currentLocationText }}
+                      </span>
+                    </button>
+
+                    <!-- Predefined Location Options -->
+                    <button
+                      v-for="option in locationOptions.slice(1)"
+                      :key="option.value"
+                      type="button"
+                      class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center space-x-3 text-gray-900"
+                      @click="selectLocationOption(option)"
+                    >
+                      <Icon name="heroicons:building-office-2-20-solid" class="h-5 w-5 text-gray-400" />
+                      <span>{{ option.label }}</span>
+                    </button>
+
+                    <!-- Custom Input Option -->
+                    <div class="px-4 py-3 border-t border-gray-100">
+                      <input
+                        type="text"
+                        placeholder="Enter custom location..."
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        @keyup.enter="(e) => { searchLocation = (e.target as HTMLInputElement).value; showLocationDropdown = false }"
+                        @click.stop
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Error Message -->
+                  <div
+                    v-if="locationError"
+                    class="absolute top-full left-0 right-0 mt-1 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm z-40"
+                  >
+                    {{ locationError }}
+                  </div>
                 </div>
 
                 <!-- Workspace Type -->
@@ -111,11 +184,12 @@
 
                 <!-- Search Button -->
                 <button
-                  class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-4 px-8 rounded-xl lg:rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2 mt-2 lg:mt-0"
+                  class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 mt-2 lg:mt-0 whitespace-nowrap"
                   @click="handleSearch"
+                  aria-label="Search workspaces"
                 >
+                  <span class="text-sm font-medium">Search</span>
                   <Icon name="heroicons:magnifying-glass-20-solid" class="h-5 w-5" />
-                  <span class="sm:inline lg:hidden xl:inline">Search</span>
                 </button>
               </div>
             </div>
@@ -465,11 +539,12 @@ import type { Workspace, PaginatedResponse } from '~/types'
 useHead({
   title: 'DayDeskr - Find Your Perfect Workspace',
   meta: [
-    {
-      name: 'description',
-      content: 'Discover and book amazing workspaces, from cozy cafés to modern offices. Book by the hour, day, or month with DayDeskr.',
-    },
-  ],
+    { name: 'description', content: 'Discover and book amazing workspaces by the hour, day, or month. From cozy cafés to modern offices - find your perfect workspace with DayDeskr.' },
+    { name: 'keywords', content: 'workspace, coworking, office rental, hot desk, meeting room, flexible workspace' },
+    { property: 'og:title', content: 'DayDeskr - Find Your Perfect Workspace' },
+    { property: 'og:description', content: 'Discover and book amazing workspaces by the hour, day, or month.' },
+    { property: 'og:type', content: 'website' }
+  ]
 })
 
 // API
@@ -479,6 +554,20 @@ const { getWorkspaces } = useApi()
 const searchLocation = ref('')
 const searchType = ref('')
 const searchDate = ref('')
+const showLocationDropdown = ref(false)
+const isDetectingLocation = ref(false)
+const locationError = ref('')
+const currentLocationText = ref('Current Location')
+
+// Location options for dropdown
+const locationOptions = ref([
+  { value: 'current', label: 'Current Location', isCurrentLocation: true },
+  { value: 'london', label: 'London, UK' },
+  { value: 'manchester', label: 'Manchester, UK' },
+  { value: 'birmingham', label: 'Birmingham, UK' },
+  { value: 'glasgow', label: 'Glasgow, UK' },
+  { value: 'edinburgh', label: 'Edinburgh, UK' }
+])
 
 // Demo banner state - prevent hydration mismatch by using useState
 const isDemoBannerDismissed = useState('demo-banner-dismissed', () => false)
@@ -938,6 +1027,174 @@ const handleImageError = (event: Event) => {
   const img = event.target as HTMLImageElement
   img.style.display = 'none'
 }
+
+// Browser compatibility check
+const isGeolocationSupported = () => {
+  return 'geolocation' in navigator && typeof navigator.geolocation.getCurrentPosition === 'function'
+}
+
+const isSecureContext = () => {
+  return window.isSecureContext || location.protocol === 'https:' || location.hostname === 'localhost'
+}
+
+// Geolocation methods
+const detectCurrentLocation = async () => {
+  // Check browser support
+  if (!isGeolocationSupported()) {
+    locationError.value = 'Geolocation is not supported by this browser. Please enter your location manually.'
+    return
+  }
+
+  // Check secure context (HTTPS required for geolocation in most browsers)
+  if (!isSecureContext()) {
+    locationError.value = 'Geolocation requires a secure connection (HTTPS). Please enter your location manually.'
+    return
+  }
+
+  isDetectingLocation.value = true
+  locationError.value = ''
+  currentLocationText.value = 'Detecting location...'
+
+  try {
+    // Check permissions first (if supported)
+    if ('permissions' in navigator) {
+      try {
+        const permission = await navigator.permissions.query({ name: 'geolocation' })
+        if (permission.state === 'denied') {
+          throw new Error('Location permission denied')
+        }
+      } catch (permError) {
+        // Permissions API not supported, continue with geolocation attempt
+        console.warn('Permissions API not supported:', permError)
+      }
+    }
+
+    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 15000, // Increased timeout for better compatibility
+        maximumAge: 300000 // 5 minutes cache
+      }
+
+      // Fallback for older browsers
+      const successCallback = (pos: GeolocationPosition) => {
+        resolve(pos)
+      }
+
+      const errorCallback = (err: GeolocationPositionError) => {
+        reject(err)
+      }
+
+      navigator.geolocation.getCurrentPosition(successCallback, errorCallback, options)
+    })
+
+    const { latitude, longitude } = position.coords
+    
+    // Multiple fallback services for reverse geocoding
+    let locationData = null
+    const geocodingServices = [
+      {
+        url: `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`,
+        parser: (data: any) => ({
+          city: data.city || data.locality || data.principalSubdivision,
+          country: data.countryName
+        })
+      },
+      {
+        url: `https://geocode.xyz/${latitude},${longitude}?json=1`,
+        parser: (data: any) => ({
+          city: data.city || data.region,
+          country: data.country
+        })
+      }
+    ]
+
+    for (const service of geocodingServices) {
+      try {
+        const response = await fetch(service.url)
+        if (response.ok) {
+          const data = await response.json()
+          locationData = service.parser(data)
+          if (locationData.city) break
+        }
+      } catch (serviceError) {
+        console.warn('Geocoding service failed:', serviceError)
+        continue
+      }
+    }
+    
+    if (!locationData || !locationData.city) {
+      // Fallback to coordinates if reverse geocoding fails
+      const coords = `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`
+      searchLocation.value = coords
+      currentLocationText.value = `Location: ${coords}`
+    } else {
+      const locationName = locationData.city || 'Unknown location'
+      const country = locationData.country || ''
+      const fullLocation = country ? `${locationName}, ${country}` : locationName
+      
+      searchLocation.value = fullLocation
+      currentLocationText.value = fullLocation
+    }
+    
+    showLocationDropdown.value = false
+    
+  } catch (error: any) {
+    console.error('Geolocation error:', error)
+    
+    let errorMessage = 'Failed to detect location. Please enter manually.'
+    
+    if (error.code) {
+      switch (error.code) {
+        case 1: // PERMISSION_DENIED
+          errorMessage = 'Location access denied. Please enable location permissions in your browser settings.'
+          break
+        case 2: // POSITION_UNAVAILABLE
+          errorMessage = 'Location unavailable. Please check your internet connection and try again.'
+          break
+        case 3: // TIMEOUT
+          errorMessage = 'Location request timed out. Please try again or enter your location manually.'
+          break
+        default:
+          errorMessage = 'Location detection failed. Please enter your location manually.'
+      }
+    } else if (error.message?.includes('denied')) {
+      errorMessage = 'Location permission denied. Please enable location access and try again.'
+    }
+    
+    locationError.value = errorMessage
+    currentLocationText.value = 'Current Location'
+  } finally {
+    isDetectingLocation.value = false
+  }
+}
+
+const selectLocationOption = (option: any) => {
+  if (option.isCurrentLocation) {
+    detectCurrentLocation()
+  } else {
+    searchLocation.value = option.label
+    showLocationDropdown.value = false
+  }
+}
+
+const toggleLocationDropdown = () => {
+  showLocationDropdown.value = !showLocationDropdown.value
+}
+
+const closeLocationDropdown = () => {
+  showLocationDropdown.value = false
+}
+
+// Close dropdown when clicking outside
+onMounted(() => {
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement
+    if (!target.closest('.location-dropdown-container')) {
+      showLocationDropdown.value = false
+    }
+  })
+})
 
 // Methods
 const handleSearch = () => {

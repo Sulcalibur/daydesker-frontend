@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200">
+  <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover fade-in">
     <!-- Image Carousel -->
     <div class="relative h-48 bg-gray-200">
       <div
@@ -59,7 +59,7 @@
 
       <!-- Workspace Type Badge -->
       <div class="absolute top-2 left-2">
-        <span class="px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-md">
+        <span class="px-2 py-1 text-xs font-medium gradient-primary text-white rounded-md shadow-sm">
           {{ getWorkspaceTypeLabel(workspace.type) }}
         </span>
       </div>
@@ -69,7 +69,7 @@
         v-if="workspace.provider.is_verified"
         class="absolute top-2 right-2"
       >
-        <span class="flex items-center px-2 py-1 text-xs font-medium bg-green-600 text-white rounded-md">
+        <span class="flex items-center px-2 py-1 text-xs font-medium gradient-secondary text-white rounded-md shadow-sm">
           <CheckBadgeIcon class="w-3 h-3 mr-1" />
           Verified
         </span>
@@ -127,7 +127,7 @@
 
       <!-- Provider Info -->
       <div class="flex items-center text-sm text-gray-600 mb-4">
-        <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-medium mr-2">
+        <div class="w-6 h-6 gradient-primary rounded-full flex items-center justify-center text-white text-xs font-medium mr-2 shadow-sm">
           {{ getInitials(workspace.provider.business_name) }}
         </div>
         <span class="truncate">{{ workspace.provider.business_name }}</span>
@@ -152,7 +152,7 @@
         <!-- Action Button -->
         <button
           @click="navigateToWorkspace"
-          class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
+          class="btn btn-primary px-4 py-2 text-sm font-medium rounded-md btn-hover-lift"
         >
           View Details
         </button>

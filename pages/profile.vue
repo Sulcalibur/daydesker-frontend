@@ -17,7 +17,7 @@
             <span class="text-sm text-gray-600">{{ user?.email }}</span>
             <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
               <span class="text-white text-sm font-medium">
-                {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
+                {{ user?.name?.split(' ').map(n => n.charAt(0)).join('') || 'U' }}
               </span>
             </div>
           </div>
@@ -33,11 +33,11 @@
           <div class="flex items-center space-x-6">
             <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
               <span class="text-white text-2xl font-bold">
-                {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
+                {{ user?.name?.split(' ').map(n => n.charAt(0)).join('') || 'U' }}
               </span>
             </div>
             <div>
-              <h2 class="text-2xl font-bold text-gray-900">{{ user?.first_name }} {{ user?.last_name }}</h2>
+              <h2 class="text-2xl font-bold text-gray-900">{{ user?.name || 'User' }}</h2>
               <p class="text-gray-600">{{ user?.email }}</p>
               <div class="flex items-center mt-2">
                 <span

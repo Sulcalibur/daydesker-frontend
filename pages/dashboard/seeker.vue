@@ -1,84 +1,149 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <div class="flex items-center">
-            <h1 class="text-2xl font-bold text-gray-900">DayDeskr</h1>
-            <span class="ml-4 px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
-              Desk Seeker
-            </span>
-          </div>
-          <div class="flex items-center space-x-4">
-            <button
-              @click="showProfile = true"
-              class="flex items-center space-x-2 text-gray-700 hover:text-gray-900"
-            >
-              <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <span class="text-white text-sm font-medium">
-                  {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
-                </span>
-              </div>
-              <span class="hidden sm:block">{{ user?.first_name }} {{ user?.last_name }}</span>
-            </button>
-            <button
-              @click="handleLogout"
-              class="text-gray-500 hover:text-gray-700"
-            >
-              <Icon name="lucide:log-out" class="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </header>
+
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Welcome Section -->
       <div class="mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-2">
-          Welcome back, {{ user?.first_name }}!
-        </h2>
-        <p class="text-gray-600">
-          Find and book the perfect workspace for your needs.
-        </p>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">
+              Welcome back, {{ user?.name?.split(' ')[0] || user?.name }}!
+            </h2>
+            <p class="text-gray-600">
+              Find and book the perfect workspace for your needs.
+            </p>
+          </div>
+          <!-- Quick Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
+            <NuxtLink
+              to="/browse"
+              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              <Icon name="lucide:search" class="w-4 h-4 mr-2" />
+              Browse Workspaces
+            </NuxtLink>
+            <NuxtLink
+              to="/saved"
+              class="inline-flex items-center px-4 py-2 bg-white text-gray-700 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              <Icon name="lucide:heart" class="w-4 h-4 mr-2" />
+              View Saved
+            </NuxtLink>
+
+          </div>
+        </div>
       </div>
 
-      <!-- Quick Stats -->
+      <!-- Enhanced Quick Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white rounded-xl shadow-sm p-6 border">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Icon name="lucide:calendar" class="w-6 h-6 text-blue-600" />
+        <div class="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md transition-shadow cursor-pointer group">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon name="lucide:calendar" class="w-6 h-6 text-white" />
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Active Bookings</p>
+                <p class="text-2xl font-bold text-gray-900">{{ stats.activeBookings }}</p>
+              </div>
             </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Active Bookings</p>
-              <p class="text-2xl font-bold text-gray-900">{{ stats.activeBookings }}</p>
-            </div>
+            <Icon name="lucide:arrow-right" class="w-5 h-5 text-gray-400 group-hover:text-blue-600 transition-colors" />
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <p class="text-xs text-gray-500">+2 from last month</p>
           </div>
         </div>
         
-        <div class="bg-white rounded-xl shadow-sm p-6 border">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Icon name="lucide:map-pin" class="w-6 h-6 text-green-600" />
+        <div class="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md transition-shadow cursor-pointer group">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon name="lucide:heart" class="w-6 h-6 text-white" />
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Saved Spaces</p>
+                <p class="text-2xl font-bold text-gray-900">{{ stats.favoriteSpaces }}</p>
+              </div>
             </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Favorite Spaces</p>
-              <p class="text-2xl font-bold text-gray-900">{{ stats.favoriteSpaces }}</p>
-            </div>
+            <Icon name="lucide:arrow-right" class="w-5 h-5 text-gray-400 group-hover:text-green-600 transition-colors" />
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <p class="text-xs text-gray-500">3 new this week</p>
           </div>
         </div>
         
-        <div class="bg-white rounded-xl shadow-sm p-6 border">
-          <div class="flex items-center">
-            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Icon name="lucide:clock" class="w-6 h-6 text-purple-600" />
+        <div class="bg-white rounded-xl shadow-sm p-6 border hover:shadow-md transition-shadow cursor-pointer group">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon name="lucide:clock" class="w-6 h-6 text-white" />
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600">Hours Booked</p>
+                <p class="text-2xl font-bold text-gray-900">{{ stats.hoursBooked }}</p>
+              </div>
             </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-600">Hours Booked</p>
-              <p class="text-2xl font-bold text-gray-900">{{ stats.hoursBooked }}</p>
+            <Icon name="lucide:arrow-right" class="w-5 h-5 text-gray-400 group-hover:text-purple-600 transition-colors" />
+          </div>
+          <div class="mt-4 pt-4 border-t border-gray-100">
+            <p class="text-xs text-gray-500">12h this month</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personalized Recommendations -->
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-8 border border-blue-100">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900">Recommended for You</h3>
+            <p class="text-sm text-gray-600">Based on your booking history and preferences</p>
+          </div>
+          <Icon name="lucide:sparkles" class="w-6 h-6 text-blue-600" />
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <Icon name="lucide:coffee" class="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-900">Cozy Coffee Co-working</h4>
+                <p class="text-sm text-gray-600">Downtown • $15/hour</p>
+                <div class="flex items-center mt-1">
+                  <div class="flex text-yellow-400">
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                  </div>
+                  <span class="text-xs text-gray-500 ml-1">4.9 (127)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+            <div class="flex items-center space-x-3">
+              <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <Icon name="lucide:building" class="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <h4 class="font-medium text-gray-900">Modern Business Hub</h4>
+                <p class="text-sm text-gray-600">Business District • $25/hour</p>
+                <div class="flex items-center mt-1">
+                  <div class="flex text-yellow-400">
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                    <Icon name="lucide:star" class="w-4 h-4 fill-current" />
+                    <Icon name="lucide:star" class="w-4 h-4" />
+                  </div>
+                  <span class="text-xs text-gray-500 ml-1">4.7 (89)</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -189,10 +254,10 @@
           <div class="text-center">
             <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <span class="text-white text-xl font-medium">
-                {{ user?.first_name?.charAt(0) }}{{ user?.last_name?.charAt(0) }}
+                {{ user?.name?.split(' ').map(n => n.charAt(0)).join('') || 'U' }}
               </span>
             </div>
-            <h4 class="text-lg font-medium text-gray-900">{{ user?.first_name }} {{ user?.last_name }}</h4>
+            <h4 class="text-lg font-medium text-gray-900">{{ user?.name || 'User' }}</h4>
             <p class="text-gray-600">{{ user?.email }}</p>
           </div>
           <div class="border-t pt-4">
