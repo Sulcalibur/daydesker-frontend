@@ -51,22 +51,21 @@
 
           <div class="ml-10 space-x-4">
             <!-- Right side - Authentication Links -->
-            <ClientOnly>
-              <div class="flex items-center space-x-4">
-                <template v-if="!isAuthenticated">
-                  <NuxtLink 
-                    to="/auth/login" 
-                    class="text-base font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Sign In
-                  </NuxtLink>
-                  <NuxtLink 
-                    to="/auth/select-type" 
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-                  >
-                    Register
-                  </NuxtLink>
-                </template>
+            <div class="flex items-center space-x-4">
+              <template v-if="!isAuthenticated">
+                <NuxtLink 
+                  to="/auth/login" 
+                  class="text-base font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                >
+                  Sign In
+                </NuxtLink>
+                <NuxtLink 
+                  to="/auth/select-type" 
+                  class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                >
+                  Register
+                </NuxtLink>
+              </template>
                 <template v-else>
                 <div class="relative" ref="userMenuRef">
                   <button 
@@ -184,9 +183,8 @@
                     </div>
                   </div>
                 </div>
-                </template>
-              </div>
-            </ClientOnly>
+              </template>
+            </div>
           </div>
         </div>
 
@@ -383,34 +381,32 @@
                   Sign Out
                 </button>
               </div>
-            </ClientOnly>
+            
 
             <!-- Guest options -->
-            <ClientOnly>
-              <div v-if="!isAuthenticated" class="border-t border-gray-200 py-2">
-                <NuxtLink 
-                  to="/auth/login" 
-                  class="flex items-center px-4 py-3 text-blue-600 hover:bg-blue-50 transition-colors"
-                  @click="mobileMenuOpen = false"
-                >
-                  <svg class="w-5 h-5 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                  </svg>
-                  Sign In
-                </NuxtLink>
-                
-                <NuxtLink 
-                  to="/auth/select-type" 
-                  class="flex items-center px-4 py-3 text-blue-600 hover:bg-blue-50 transition-colors"
-                  @click="mobileMenuOpen = false"
-                >
-                  <svg class="w-5 h-5 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                  </svg>
-                  Sign Up
-                </NuxtLink>
-              </div>
-            </ClientOnly>
+            <div v-if="!isAuthenticated" class="border-t border-gray-200 py-2">
+              <NuxtLink 
+                to="/auth/login" 
+                class="flex items-center px-4 py-3 text-blue-600 hover:bg-blue-50 transition-colors"
+                @click="mobileMenuOpen = false"
+              >
+                <svg class="w-5 h-5 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                Sign In
+              </NuxtLink>
+              
+              <NuxtLink 
+                to="/auth/select-type" 
+                class="flex items-center px-4 py-3 text-blue-600 hover:bg-blue-50 transition-colors"
+                @click="mobileMenuOpen = false"
+              >
+                <svg class="w-5 h-5 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                </svg>
+                Sign Up
+              </NuxtLink>
+            </div>
           </div>
         </div>
       </div>
