@@ -1,9 +1,10 @@
 <template>
   <!-- Demo Banner -->
-  <div
-    v-if="!isDemoBannerDismissed"
-    class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-  >
+  <ClientOnly>
+    <div
+      v-if="!isDemoBannerDismissed"
+      class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+    >
       <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
         <div class="pr-16 sm:text-center sm:px-16">
           <p class="font-medium text-white">
@@ -31,7 +32,8 @@
           </button>
         </div>
       </div>
-  </div>
+    </div>
+  </ClientOnly>
 
   <div class="min-h-screen bg-white">
     <!-- Hero Section -->
