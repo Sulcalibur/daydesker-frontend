@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { nextTick } from 'vue'
 import type { User } from '~/types'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -41,17 +42,19 @@ export const useAuthStore = defineStore('auth', () => {
   
   // Initialize auth state from cookie on store creation
   const initializeAuth = async () => {
-    const tokenCookie = useCookie('auth-token')
-    if (tokenCookie.value) {
-      token.value = tokenCookie.value
-      // Only fetch user data on client-side to avoid SSR issues
-      if (process.client && !user.value) {
-        try {
-          await fetchUserData()
-        } catch (error) {
-          console.warn('Failed to fetch user data during initialization:', error)
-          // Clear invalid token
-          clearAuth()
+    // Only initialize on client-side to prevent hydration mismatch
+    if (process.client) {
+      const tokenCookie = useCookie('auth-token')
+      if (tokenCookie.value) {
+        token.value = tokenCookie.value
+        if (!user.value) {
+          try {
+            await fetchUserData()
+          } catch (error) {
+            console.warn('Failed to fetch user data during initialization:', error)
+            // Clear invalid token
+            clearAuth()
+          }
         }
       }
     }
@@ -77,9 +80,12 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
   
-  // Initialize auth state immediately when store is created
-  // Run on both server and client for proper SSR
-  initializeAuth()
+  // Initialize auth state after hydration to prevent mismatch
+  if (process.client) {
+    nextTick(() => {
+      initializeAuth()
+    })
+  }
   
   // Get dashboard route based on user type
   const getDashboardRoute = () => {
