@@ -44,8 +44,8 @@ export const useAuthStore = defineStore('auth', () => {
     const tokenCookie = useCookie('auth-token')
     if (tokenCookie.value) {
       token.value = tokenCookie.value
-      // If we have a token but no user data, fetch it
-      if (!user.value) {
+      // Only fetch user data on client-side to avoid SSR issues
+      if (process.client && !user.value) {
         try {
           await fetchUserData()
         } catch (error) {
@@ -78,10 +78,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
   
   // Initialize auth state immediately when store is created
-  // Only run on client-side to avoid SSR issues
-  if (process.client) {
-    initializeAuth()
-  }
+  // Run on both server and client for proper SSR
+  initializeAuth()
   
   // Get dashboard route based on user type
   const getDashboardRoute = () => {
