@@ -50,21 +50,39 @@
           <div class="ml-10 space-x-4">
             <!-- Right side - Authentication Links -->
             <div class="flex items-center space-x-4">
-              <template v-if="!isAuthenticated">
-                <NuxtLink 
-                  to="/auth/login" 
-                  class="text-base font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                >
-                  Sign In
-                </NuxtLink>
-                <NuxtLink 
-                  to="/auth/select-type" 
-                  class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-                >
-                  Register
-                </NuxtLink>
-              </template>
-                <template v-else>
+              <ClientOnly>
+                <template v-if="!isAuthenticated">
+                  <NuxtLink 
+                    to="/auth/login" 
+                    class="text-base font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    Sign In
+                  </NuxtLink>
+                  <NuxtLink 
+                    to="/auth/select-type" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                  >
+                    Register
+                  </NuxtLink>
+                </template>
+                <template #fallback>
+                  <!-- Fallback for SSR -->
+                  <NuxtLink 
+                    to="/auth/login" 
+                    class="text-base font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    Sign In
+                  </NuxtLink>
+                  <NuxtLink 
+                    to="/auth/select-type" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                  >
+                    Register
+                  </NuxtLink>
+                </template>
+              </ClientOnly>
+              <ClientOnly>
+                <template v-if="isAuthenticated">
                 <div class="relative" ref="userMenuRef">
                   <button 
                     @click="toggleUserMenu" 
@@ -181,7 +199,8 @@
                     </div>
                   </div>
                 </div>
-              </template>
+                </template>
+              </ClientOnly>
             </div>
           </div>
         </div>
@@ -189,32 +208,34 @@
         <!-- Mobile menu button -->
         <div class="md:hidden flex items-center space-x-2">
           <!-- Mobile Auth Links -->
-          <template v-if="!isAuthenticated">
-            <NuxtLink 
-              to="/auth/login" 
-              class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
-            >
-              Sign In
-            </NuxtLink>
-            <NuxtLink 
-              to="/auth/select-type" 
+          <ClientOnly>
+            <template v-if="!isAuthenticated">
+              <NuxtLink 
+                to="/auth/login" 
+                class="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors duration-200"
+              >
+                Sign In
+              </NuxtLink>
+              <NuxtLink 
+                to="/auth/select-type" 
               class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors duration-200"
             >
               Register
             </NuxtLink>
-          </template>
-          <template v-else>
-            <button 
-              @click="toggleUserMenu" 
-              class="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
-            >
-              <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                <span class="text-white text-xs font-medium">
-                  {{ user?.name?.charAt(0).toUpperCase() || 'U' }}
-                </span>
-              </div>
-            </button>
-          </template>
+            </template>
+            <template v-else>
+              <button 
+                @click="toggleUserMenu" 
+                class="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
+              >
+                <div class="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span class="text-white text-xs font-medium">
+                    {{ user?.name?.charAt(0).toUpperCase() || 'U' }}
+                  </span>
+                </div>
+              </button>
+            </template>
+          </ClientOnly>
           
           <button
             @click="mobileMenuOpen = !mobileMenuOpen"
@@ -269,7 +290,8 @@
           <!-- Mobile menu content -->
           <div class="flex-1 overflow-y-auto">
             <!-- User section (if authenticated) -->
-            <div v-if="isAuthenticated" class="p-4 border-b border-gray-200">
+            <ClientOnly>
+              <div v-if="isAuthenticated" class="p-4 border-b border-gray-200">
                 <div class="flex items-center space-x-3">
                   <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                     <span class="text-white font-semibold">{{ user?.name?.charAt(0) || 'U' }}</span>
@@ -279,10 +301,10 @@
                     <p class="text-sm text-gray-500">{{ user?.email }}</p>
                   </div>
                 </div>
-            </div>
+              </div>
 
-            <!-- Main navigation -->
-            <div v-if="isAuthenticated" class="py-2">
+              <!-- Main navigation -->
+              <div v-if="isAuthenticated" class="py-2">
                 <NuxtLink 
                   to="/browse" 
                   class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors"
@@ -326,10 +348,10 @@
                   </svg>
                   Messages
                 </NuxtLink>
-            </div>
+              </div>
 
-            <!-- Authenticated user options -->
-            <div v-if="isAuthenticated" class="border-t border-gray-200 py-2">
+              <!-- Authenticated user options -->
+              <div v-if="isAuthenticated" class="border-t border-gray-200 py-2">
                 <NuxtLink 
                   to="/profile" 
                   class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors"
@@ -373,10 +395,12 @@
                   </svg>
                   Sign Out
                 </button>
-            </div>
+              </div>
+            </ClientOnly>
 
             <!-- Guest options -->
-            <div v-if="!isAuthenticated" class="border-t border-gray-200 py-2">
+            <ClientOnly>
+              <div v-if="!isAuthenticated" class="border-t border-gray-200 py-2">
               <NuxtLink 
                 to="/auth/login" 
                 class="flex items-center px-4 py-3 text-blue-600 hover:bg-blue-50 transition-colors"
@@ -398,7 +422,8 @@
                 </svg>
                 Sign Up
               </NuxtLink>
-            </div>
+              </div>
+            </ClientOnly>
           </div>
         </div>
       </div>
