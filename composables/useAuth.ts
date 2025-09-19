@@ -9,7 +9,9 @@ export const useAuth = () => {
   onMounted(() => {
     // If we have a token but no user, fetch user data
     if (authStore.token && !authStore.user) {
-      fetchUser()
+      authStore.fetchUserData().catch((error) => {
+        console.warn('Failed to fetch user data on mount:', error)
+      })
     }
   })
   
@@ -73,12 +75,12 @@ export const useAuth = () => {
       authStore.clearAuth()
       
       // Redirect to login
-      await navigateTo('/auth/login')
+      await navigateTo('/')
     } catch (error) {
       console.error('Logout error:', error)
       // Still clear auth state on error
       authStore.clearAuth()
-      await navigateTo('/auth/login')
+      await navigateTo('/')
     } finally {
       authStore.setLoading(false)
     }
@@ -86,13 +88,7 @@ export const useAuth = () => {
   
   const fetchUser = async () => {
     try {
-      if (!authStore.token) {
-        throw new Error('No authentication token')
-      }
-      
-      const user = await apiGetUser()
-      authStore.setUser(user)
-      return user
+      return await authStore.fetchUserData()
     } catch (error) {
       console.error('Fetch user error:', error)
       // If fetching user fails, clear auth state

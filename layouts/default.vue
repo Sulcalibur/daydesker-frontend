@@ -108,6 +108,13 @@
 
                     <!-- Main Menu Items -->
                     <div class="py-1">
+                      <NuxtLink :to="authStore.getDashboardRoute()" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="closeUserMenu">
+                        <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                        Dashboard
+                      </NuxtLink>
+                      
                       <NuxtLink to="/profile" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors" @click="closeUserMenu">
                         <svg class="w-4 h-4 mr-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -473,23 +480,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { ChevronDownIcon } from '@heroicons/vue/24/outline'
 import { useAuth } from '~/composables/useAuth'
 import { useNotifications } from '~/composables/useNotifications'
+import { useAuthStore } from '~/stores/auth'
 
 // Authentication state
 const { isAuthenticated, user, logout } = useAuth()
+const authStore = useAuthStore()
 
 // Notification state
 const { displayBadge, totalUnreadCount, initializeNotifications } = useNotifications()
 
 // Computed
 const currentYear = computed(() => {
-  if (process.client) {
-    return new Date().getFullYear()
-  }
-  return 2024 // fallback year for SSR
+  return new Date().getFullYear()
 })
 
 // UI state
@@ -520,20 +526,55 @@ async function handleLogout() {
 
 // Click outside handler for user menu
 function handleClickOutside(event: Event) {
-  // Add null checks to prevent nextSibling errors
-  if (userMenuRef.value && event.target && userMenuRef.value.contains && !userMenuRef.value.contains(event.target as Node)) {
-    closeUserMenu()
+  // Comprehensive null checks to prevent DOM manipulation errors
+  if (!event.target || !userMenuRef.value) {
+    return
+  }
+  
+  // Ensure the target is a valid Node and userMenuRef has contains method
+  const target = event.target as Node
+  if (target && userMenuRef.value.contains && typeof userMenuRef.value.contains === 'function') {
+    try {
+      if (!userMenuRef.value.contains(target)) {
+        closeUserMenu()
+      }
+    } catch (error) {
+      // Silently handle any DOM access errors during hydration
+      console.warn('DOM access error in handleClickOutside:', error)
+    }
   }
 }
 
 // Lifecycle hooks
 onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
+  // Only add event listeners on client side to prevent SSR issues
+  if (process.client) {
+    // Use nextTick to ensure DOM is fully rendered
+    nextTick(() => {
+      try {
+        document.addEventListener('click', handleClickOutside)
+      } catch (error) {
+        console.warn('Failed to add click event listener:', error)
+      }
+    })
+  }
+  
   // Initialize notifications when component mounts
-  initializeNotifications()
+  try {
+    initializeNotifications()
+  } catch (error) {
+    console.warn('Failed to initialize notifications:', error)
+  }
 })
 
 onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
+  // Only remove event listeners on client side
+  if (process.client) {
+    try {
+      document.removeEventListener('click', handleClickOutside)
+    } catch (error) {
+      console.warn('Failed to remove click event listener:', error)
+    }
+  }
 })
 </script>

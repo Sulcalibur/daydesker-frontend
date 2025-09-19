@@ -40,15 +40,48 @@ export const useAuthStore = defineStore('auth', () => {
   }
   
   // Initialize auth state from cookie on store creation
-  const initializeAuth = () => {
+  const initializeAuth = async () => {
     const tokenCookie = useCookie('auth-token')
     if (tokenCookie.value) {
       token.value = tokenCookie.value
+      // If we have a token but no user data, fetch it
+      if (!user.value) {
+        try {
+          await fetchUserData()
+        } catch (error) {
+          console.warn('Failed to fetch user data during initialization:', error)
+          // Clear invalid token
+          clearAuth()
+        }
+      }
+    }
+  }
+  
+  // Fetch user data using the current token
+  const fetchUserData = async () => {
+    if (!token.value) {
+      throw new Error('No authentication token')
+    }
+    
+    try {
+      setLoading(true)
+      const { getUser } = useApi()
+      const userData = await getUser()
+      setUser(userData)
+      return userData
+    } catch (error) {
+      console.error('Failed to fetch user data:', error)
+      throw error
+    } finally {
+      setLoading(false)
     }
   }
   
   // Initialize auth state immediately when store is created
-  initializeAuth()
+  // Only run on client-side to avoid SSR issues
+  if (process.client) {
+    initializeAuth()
+  }
   
   // Get dashboard route based on user type
   const getDashboardRoute = () => {
@@ -73,6 +106,7 @@ export const useAuthStore = defineStore('auth', () => {
     clearAuth,
     setLoading,
     initializeAuth,
+    fetchUserData,
     getDashboardRoute
   }
 })

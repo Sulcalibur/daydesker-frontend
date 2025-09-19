@@ -227,6 +227,17 @@
                     Visit Website
                   </a>
                 </div>
+                <div class="mt-4">
+                  <button
+                    @click="handleMessageHost"
+                    :disabled="isMessagingHost"
+                    class="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-md transition-colors duration-200"
+                  >
+                    <ChatBubbleLeftRightIcon class="w-4 h-4 mr-2" />
+                    <span v-if="isMessagingHost">Starting conversation...</span>
+                    <span v-else>Message Host</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -309,6 +320,7 @@ import {
   CheckBadgeIcon,
   PhoneIcon,
   ExclamationTriangleIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/vue/24/outline'
 import type { Workspace } from '~/types'
 
@@ -320,6 +332,14 @@ definePageMeta({
 // Get workspace ID from route
 const route = useRoute()
 const workspaceId = parseInt(route.params.id as string)
+
+// Composables
+const { createWorkspaceConversation } = useMessaging()
+const authStore = useAuthStore()
+const router = useRouter()
+
+// Message host state
+const isMessagingHost = ref(false)
 
 // Mock workspaces data (same as homepage)
 const mockWorkspaces = [
@@ -559,6 +579,46 @@ const handleBookingClick = () => {
   // - Open a booking modal
   // - Send data to a booking API
   // - Track the booking event in analytics
+}
+
+// Handle message host functionality
+const handleMessageHost = async () => {
+  if (!authStore.isAuthenticated) {
+    // Redirect to login if not authenticated
+    router.push('/login')
+    return
+  }
+
+  if (!workspace.value) {
+    console.error('No workspace found')
+    return
+  }
+
+  isMessagingHost.value = true
+
+  try {
+    // For now, we'll use a mock provider ID since the provider object doesn't have an ID
+    // In a real implementation, the provider would have an ID field
+    const providerId = workspace.value.id * 100 // Mock provider ID based on workspace ID
+    
+    const conversation = await createWorkspaceConversation(
+      workspace.value.id,
+      providerId,
+      workspace.value.name,
+      workspace.value.type
+    )
+
+    if (conversation) {
+      // Navigate to messages page with the conversation
+      router.push('/messages')
+    }
+  } catch (error) {
+    console.error('Failed to create conversation:', error)
+    // You could show a toast notification here
+    alert('Failed to start conversation with host. Please try again.')
+  } finally {
+    isMessagingHost.value = false
+  }
 }
 
 const formatAddress = (address: string, city: string, state?: string, country?: string, postalCode?: string) => {
