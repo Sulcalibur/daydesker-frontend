@@ -527,6 +527,7 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick } from 'vue'
 import type { Workspace, PaginatedResponse } from '~/types'
 
 // SEO
@@ -564,13 +565,17 @@ const locationOptions = ref([
 ])
 
 // Demo banner state - prevent hydration mismatch by using useState
+// Always start with false on both server and client to avoid hydration mismatch
 const isDemoBannerDismissed = useState('demo-banner-dismissed', () => false)
 
-// Initialize from localStorage on client side only
+// Initialize from localStorage on client side only after hydration
 onMounted(() => {
   if (process.client) {
-    const dismissed = localStorage.getItem('demo-banner-dismissed') === 'true'
-    isDemoBannerDismissed.value = dismissed
+    // Use nextTick to ensure this runs after hydration
+    nextTick(() => {
+      const dismissed = localStorage.getItem('demo-banner-dismissed') === 'true'
+      isDemoBannerDismissed.value = dismissed
+    })
   }
 })
 
