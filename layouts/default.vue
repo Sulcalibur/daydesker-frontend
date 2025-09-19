@@ -12,8 +12,7 @@
           </NuxtLink>
 
           <!-- Main Navigation -->
-          <ClientOnly>
-            <nav v-if="isAuthenticated" class="hidden md:flex items-center space-x-8">
+          <nav v-if="isAuthenticated" class="hidden md:flex items-center space-x-8">
               <NuxtLink 
                 to="/browse" 
                 class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
@@ -46,8 +45,7 @@
                   {{ totalUnreadCount }}
                 </span>
               </NuxtLink>
-            </nav>
-          </ClientOnly>
+          </nav>
 
           <div class="ml-10 space-x-4">
             <!-- Right side - Authentication Links -->
@@ -271,8 +269,7 @@
           <!-- Mobile menu content -->
           <div class="flex-1 overflow-y-auto">
             <!-- User section (if authenticated) -->
-            <ClientOnly>
-              <div v-if="isAuthenticated" class="p-4 border-b border-gray-200">
+            <div v-if="isAuthenticated" class="p-4 border-b border-gray-200">
                 <div class="flex items-center space-x-3">
                   <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                     <span class="text-white font-semibold">{{ user?.name?.charAt(0) || 'U' }}</span>
@@ -282,12 +279,10 @@
                     <p class="text-sm text-gray-500">{{ user?.email }}</p>
                   </div>
                 </div>
-              </div>
-            </ClientOnly>
+            </div>
 
             <!-- Main navigation -->
-            <ClientOnly>
-              <div v-if="isAuthenticated" class="py-2">
+            <div v-if="isAuthenticated" class="py-2">
                 <NuxtLink 
                   to="/browse" 
                   class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors"
@@ -331,12 +326,10 @@
                   </svg>
                   Messages
                 </NuxtLink>
-              </div>
-            </ClientOnly>
+            </div>
 
             <!-- Authenticated user options -->
-            <ClientOnly>
-              <div v-if="isAuthenticated" class="border-t border-gray-200 py-2">
+            <div v-if="isAuthenticated" class="border-t border-gray-200 py-2">
                 <NuxtLink 
                   to="/profile" 
                   class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors"
@@ -380,8 +373,7 @@
                   </svg>
                   Sign Out
                 </button>
-              </div>
-            
+            </div>
 
             <!-- Guest options -->
             <div v-if="!isAuthenticated" class="border-t border-gray-200 py-2">

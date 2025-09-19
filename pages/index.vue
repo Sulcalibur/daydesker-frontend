@@ -1,14 +1,9 @@
 <template>
-  <!-- Demo Banner - Completely client side only with proper fallback -->
-  <ClientOnly>
-    <template #fallback>
-      <!-- Placeholder with same height to prevent layout shift -->
-      <div class="h-16 bg-transparent"></div>
-    </template>
-    <div
-      v-if="!isDemoBannerDismissed"
-      class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-    >
+  <!-- Demo Banner -->
+  <div
+    v-if="!isDemoBannerDismissed"
+    class="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+  >
       <div class="max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
         <div class="pr-16 sm:text-center sm:px-16">
           <p class="font-medium text-white">
@@ -36,8 +31,7 @@
           </button>
         </div>
       </div>
-    </div>
-  </ClientOnly>
+  </div>
 
   <div class="min-h-screen bg-white">
     <!-- Hero Section -->
